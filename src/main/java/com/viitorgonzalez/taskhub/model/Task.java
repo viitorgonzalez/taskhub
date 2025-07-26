@@ -2,19 +2,43 @@ package com.viitorgonzalez.taskhub.model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 /**
+ *
  *
  * @author Vítor Gonzalez
  */
 @Entity
 @Table(name = "task_table")
 public class Task {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(length = 1000)
+    private String description;
+
+    private String priority;
+
+    private boolean completed;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Task() {
     }
@@ -29,16 +53,6 @@ public class Task {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String title;
-    private String description;
-    private String priority;
-    private boolean completed;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -94,5 +108,16 @@ public class Task {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }
