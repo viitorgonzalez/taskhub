@@ -1,6 +1,7 @@
 package com.viitorgonzalez.taskhub.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -20,11 +21,22 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public List<Task> getAll() {
+    public List<Task> findAll() {
         return taskRepository.findAll();
     }
 
+    public Task findById(Long id) {
+        Optional<Task> task = this.taskRepository.findById(id);
+        return task.orElseThrow(() -> new RuntimeException(
+            "Task not found! Id: " + id
+        ));
+    }
+
     public Task save(Task task) {
+        return taskRepository.save(task);
+    }
+
+    public Task update(Task task) {
         return taskRepository.save(task);
     }
 
